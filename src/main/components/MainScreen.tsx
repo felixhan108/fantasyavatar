@@ -3,6 +3,11 @@
 import { useEffect, useRef } from "react";
 import Phaser from "phaser";
 
+enum GameState {
+  TRAVELING,
+  ENCOUNTER,
+}
+
 const AssetsKeys = {
   BACKGROUND: "background",
   SOLDIER_IDLE: "soldier-idle",
@@ -17,6 +22,7 @@ export default function MainScreen() {
     class MainScene extends Phaser.Scene {
       private soldier!: Phaser.GameObjects.Sprite;
       private background!: Phaser.GameObjects.TileSprite;
+      private gameState!: GameState;
 
       constructor() {
         // 생성자에서 씬 이름 설정
@@ -54,11 +60,7 @@ export default function MainScreen() {
       // 🧩 create()
       // ============================
       create() {
-        console.log(
-          "이미지 크기:",
-          this.textures.get(AssetsKeys.BACKGROUND).getSourceImage().width,
-          this.textures.get(AssetsKeys.BACKGROUND).getSourceImage().height
-        );
+        this.gameState = GameState.TRAVELING;
 
         this.background = this.add
           .tileSprite(0, 0, 480, 160, AssetsKeys.BACKGROUND)
@@ -97,7 +99,15 @@ export default function MainScreen() {
       // 🧩 update()
       // ============================
       update() {
-        this.background.tilePositionX += 1;
+        if (this.gameState === GameState.TRAVELING) {
+          this.background.tilePositionX += 1;
+
+          if (Phaser.Math.Between(0, 1000) < 500) {
+            this.gameState = GameState.ENCOUNTER;
+            this.soldier.play("idle"); // 여기서 한 번만 실행
+            console.log("ENCOUNTER");
+          }
+        }
       }
     }
 
