@@ -3,6 +3,12 @@
 import { useEffect, useRef } from "react";
 import Phaser from "phaser";
 
+const AssetsKeys = {
+  BACKGROUND: "background",
+  SOLDIER_IDLE: "soldier-idle",
+  SOLDIER_WALK: "soldier-walk",
+};
+
 export default function MainScreen() {
   const phaserRef = useRef<HTMLDivElement>(null);
 
@@ -11,18 +17,21 @@ export default function MainScreen() {
     class MainScene extends Phaser.Scene {
       private soldier!: Phaser.GameObjects.Sprite;
       private background!: Phaser.GameObjects.TileSprite;
+
       constructor() {
         // 생성자에서 씬 이름 설정
         super("MainScene");
       }
 
-      // 로드 씬 정의
+      // ============================
+      // 🧩 preload()
+      // ============================
       preload() {
-        this.load.image("background", "/assets/bg/road.png");
+        this.load.image(AssetsKeys.BACKGROUND, "/assets/bg/forest.png");
 
         // 캐릭터 - Idle
         this.load.spritesheet(
-          "soldier-idle",
+          AssetsKeys.SOLDIER_IDLE,
           "/assets/sprites/Soldier-Idle.png",
           {
             frameWidth: 100, // 디자인에 정해놓은 그리드 사이즈
@@ -32,7 +41,7 @@ export default function MainScreen() {
 
         // 캐릭터 - Walk
         this.load.spritesheet(
-          "soldier-walk",
+          AssetsKeys.SOLDIER_WALK,
           "/assets/sprites/Soldier-Walk.png",
           {
             frameWidth: 100, // 디자인에 정해놓은 그리드 사이즈
@@ -41,22 +50,23 @@ export default function MainScreen() {
         );
       }
 
-      // 생성 씬 정의
+      // ============================
+      // 🧩 create()
+      // ============================
       create() {
-        this.background = this.add
-          .tileSprite(0, 0, 150, 112.5, "background")
-          .setOrigin(0, 0)
-          .setScale(150 / 1024);
-
         console.log(
           "이미지 크기:",
-          this.textures.get("background").getSourceImage().width,
-          this.textures.get("background").getSourceImage().height
+          this.textures.get(AssetsKeys.BACKGROUND).getSourceImage().width,
+          this.textures.get(AssetsKeys.BACKGROUND).getSourceImage().height
         );
+
+        this.background = this.add
+          .tileSprite(0, 0, 480, 160, AssetsKeys.BACKGROUND)
+          .setOrigin(0, 0);
 
         this.anims.create({
           key: "idle",
-          frames: this.anims.generateFrameNumbers("soldier-idle", {
+          frames: this.anims.generateFrameNumbers(AssetsKeys.SOLDIER_IDLE, {
             start: 0,
             end: 5,
           }),
@@ -66,7 +76,7 @@ export default function MainScreen() {
 
         this.anims.create({
           key: "walk",
-          frames: this.anims.generateFrameNumbers("soldier-walk", {
+          frames: this.anims.generateFrameNumbers(AssetsKeys.SOLDIER_WALK, {
             start: 0,
             end: 7,
           }),
@@ -74,7 +84,7 @@ export default function MainScreen() {
           repeat: -1, // 무한 반복
         });
 
-        this.soldier = this.add.sprite(50, 110, "soldier-idle");
+        this.soldier = this.add.sprite(50, 75, AssetsKeys.SOLDIER_IDLE);
         this.soldier.play("idle");
 
         // 1초 뒤에 walk 애니메이션으로 변경 + 속도 증가
@@ -83,15 +93,21 @@ export default function MainScreen() {
         });
       }
 
+      // ============================
+      // 🧩 update()
+      // ============================
       update() {
         this.background.tilePositionX += 1;
       }
     }
 
+    // ============================
+    // 🧩 config
+    // ============================
     const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.WEBGL,
-      width: 150,
-      height: 150,
+      width: 16 * 10,
+      height: 16 * 10,
       parent: phaserRef.current,
       scene: MainScene,
       pixelArt: true,
