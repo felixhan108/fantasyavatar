@@ -2,24 +2,13 @@
 
 import { useEffect, useRef } from "react";
 import Phaser from "phaser";
-
+import { Soldier } from "@/Characters/Soldiser";
+import { Slime } from "@/Characters/Slime";
 enum GameState {
   TRAVELING,
   ENCOUNTER,
   WAREND,
 }
-
-const AssetsKeys = {
-  BACKGROUND: "background",
-  SOLDIER_IDLE: "soldier-idle",
-  SOLDIER_WALK: "soldier-walk",
-  SLIME_IDLE: "slime-idle",
-  SLIME_WALK: "slime-walk",
-  SOLDIER_ATTACK: "soldier-attack",
-  SLIME_ATTACK: "slime-attack",
-  SOLDIER_HURT: "soldier-hurt",
-  SLIME_HURT: "slime-hurt",
-};
 
 export default function MainScreen() {
   const phaserRef = useRef<HTMLDivElement>(null);
@@ -46,96 +35,24 @@ export default function MainScreen() {
       // 🧩 preload()
       // ============================
       preload() {
-        this.load.image(AssetsKeys.BACKGROUND, "/assets/bg/forest.png");
+        this.load.image("BACKGROUND", "/assets/bg/forest.png");
 
-        // 캐릭터 - Idle
-        this.load.spritesheet(
-          AssetsKeys.SOLDIER_IDLE,
-          "/assets/sprites/Soldier-Idle.png",
-          {
-            frameWidth: 100, // 디자인에 정해놓은 그리드 사이즈
-            frameHeight: 100,
-          }
-        );
+        // 병사 스프라이트 로드
+        Soldier.LoadSpritesheet(this);
 
-        // 캐릭터 - Walk
-        this.load.spritesheet(
-          AssetsKeys.SOLDIER_WALK,
-          "/assets/sprites/Soldier-Walk.png",
-          {
-            frameWidth: 100, // 디자인에 정해놓은 그리드 사이즈
-            frameHeight: 100,
-          }
-        );
-
-        // 캐릭터 - Attack
-        this.load.spritesheet(
-          AssetsKeys.SOLDIER_ATTACK,
-          "/assets/sprites/Soldier-Attack01.png",
-          {
-            frameWidth: 100, // 디자인에 정해놓은 그리드 사이즈
-            frameHeight: 100,
-          }
-        );
-
-        // 캐릭터 - Hurt
-        this.load.spritesheet(
-          AssetsKeys.SOLDIER_HURT,
-          "/assets/sprites/Soldier-Hurt.png",
-          {
-            frameWidth: 100, // 디자인에 정해놓은 그리드 사이즈
-            frameHeight: 100,
-          }
-        );
-        // 슬라임 - Idle
-        this.load.spritesheet(
-          AssetsKeys.SLIME_IDLE,
-          "/assets/sprites/Slime-Idle.png",
-          {
-            frameWidth: 100, // 디자인에 정해놓은 그리드 사이즈
-            frameHeight: 100,
-          }
-        );
-
-        // 슬라임 - Walk
-        this.load.spritesheet(
-          AssetsKeys.SLIME_WALK,
-          "/assets/sprites/Slime-Walk.png",
-          {
-            frameWidth: 100, // 디자인에 정해놓은 그리드 사이즈
-            frameHeight: 100,
-          }
-        );
-
-        // 슬라임 - Attack
-        this.load.spritesheet(
-          AssetsKeys.SLIME_ATTACK,
-          "/assets/sprites/Slime-Attack01.png",
-          {
-            frameWidth: 100, // 디자인에 정해놓은 그리드 사이즈
-            frameHeight: 100,
-          }
-        );
-
-        // 슬라임 - Hurt
-        this.load.spritesheet(
-          AssetsKeys.SLIME_HURT,
-          "/assets/sprites/Slime-Hurt.png",
-          {
-            frameWidth: 100, // 디자인에 정해놓은 그리드 사이즈
-            frameHeight: 100,
-          }
-        );
+        // 슬라임 스프라이트 로드
+        Slime.LoadSpritesheet(this);
       }
 
       // ============================
       // 🧩 create()
+      // startRandomEncounter()
       // ============================
       create() {
         this.gameState = GameState.ENCOUNTER;
 
         this.background = this.add
-          .tileSprite(0, 0, 480, 160, AssetsKeys.BACKGROUND)
+          .tileSprite(0, 0, 480, 160, "BACKGROUND")
           .setOrigin(0, 0);
 
         // 병사 HP 텍스트만 생성
@@ -145,84 +62,18 @@ export default function MainScreen() {
         });
 
         // 병사 애니메이션 생성
-        this.anims.create({
-          key: "idle",
-          frames: this.anims.generateFrameNumbers(AssetsKeys.SOLDIER_IDLE, {
-            start: 0,
-            end: 5,
-          }),
-          frameRate: 12, // 초당 12프레임
-          repeat: -1, // 무한 반복
-        });
-
-        this.anims.create({
-          key: "walk",
-          frames: this.anims.generateFrameNumbers(AssetsKeys.SOLDIER_WALK, {
-            start: 0,
-            end: 7,
-          }),
-          frameRate: 12,
-          repeat: -1,
-        });
-
-        this.anims.create({
-          key: "attack",
-          frames: this.anims.generateFrameNumbers(AssetsKeys.SOLDIER_ATTACK, {
-            start: 0,
-            end: 6,
-          }),
-          frameRate: 12,
-          repeat: 0,
-        });
-
-        this.anims.create({
-          key: "hurt",
-          frames: this.anims.generateFrameNumbers(AssetsKeys.SOLDIER_HURT, {
-            start: 0,
-            end: 3,
-          }),
-          frameRate: 12,
-          repeat: 0,
-        });
+        Soldier.CreateCharacter(this);
 
         // 슬라임 애니메이션 생성
-        this.anims.create({
-          key: "slime-idle",
-          frames: this.anims.generateFrameNumbers(AssetsKeys.SLIME_IDLE, {
-            start: 0,
-            end: 5,
-          }),
-          frameRate: 12,
-          repeat: -1,
-        });
+        Slime.CreateCharacter(this);
 
-        this.anims.create({
-          key: "slime-attack",
-          frames: this.anims.generateFrameNumbers(AssetsKeys.SLIME_ATTACK, {
-            start: 0,
-            end: 6,
-          }),
-          frameRate: 12,
-          repeat: 0,
-        });
-
-        this.anims.create({
-          key: "slime-hurt",
-          frames: this.anims.generateFrameNumbers(AssetsKeys.SLIME_HURT, {
-            start: 0,
-            end: 3,
-          }),
-          frameRate: 12,
-          repeat: 0,
-        });
-
-        this.soldier = this.add.sprite(50, 75, AssetsKeys.SOLDIER_IDLE);
-        this.soldier.play("idle");
+        // 병사 좌표 설정
+        this.soldier = Soldier.AddSprite(this);
 
         // 1초 뒤에 walk 애니메이션으로 변경
         this.time.delayedCall(1000, () => {
           this.gameState = GameState.TRAVELING;
-          this.soldier.play("walk");
+          Soldier.Play().walk();
           this.startRandomEncounter();
         });
       }
@@ -243,12 +94,14 @@ export default function MainScreen() {
 
       startBattle() {
         this.gameState = GameState.ENCOUNTER;
-        this.soldier.play("idle");
+        Soldier.Play().idle();
+        console.log("startBattle");
 
         // 슬라임 생성 (HP 텍스트 없이)
-        this.slime = this.add.sprite(100, 75, AssetsKeys.SLIME_IDLE);
+        this.slime = Slime.AddSprite(this);
         this.slime.setFlipX(true);
-        this.slime.play("slime-idle");
+        Slime.Play().idle();
+        console.log("slime added");
 
         // 전투 타이머 시작
         this.battleTimer = this.time.addEvent({
@@ -257,36 +110,42 @@ export default function MainScreen() {
           callbackScope: this,
           loop: true,
         });
+        console.log("battleTimer added");
       }
 
       executeAttack() {
+        console.log("executeAttack");
         if (this.gameState !== GameState.ENCOUNTER) {
+          console.log("gameState not encounter");
           this.battleTimer.destroy();
           return;
         }
 
-        // 객체가 존재하는지 확인
         if (!this.soldier || !this.slime) {
+          console.log("soldier or slime not found");
           this.battleTimer.destroy();
+          this.gameState = GameState.TRAVELING;
+          Soldier.Play().walk();
           return;
         }
 
         if (this.currentAttacker === "soldier") {
+          console.log("soldier attack start");
           // 병사 공격
-          this.soldier.play("attack");
+          Soldier.Play().attack();
           this.soldier.once("animationcomplete", () => {
             if (this.soldier) {
-              this.soldier.play("idle");
+              Soldier.Play().idle();
             }
           });
 
           this.time.delayedCall(500, () => {
             if (!this.slime) return;
 
-            this.slime.play("slime-hurt");
+            Slime.Play().hurt();
             this.slime.once("animationcomplete", () => {
               if (this.slime) {
-                this.slime.play("slime-idle");
+                Slime.Play().idle();
               }
             });
             const damage = Phaser.Math.Between(30, 50);
@@ -295,21 +154,22 @@ export default function MainScreen() {
             this.checkBattleEnd();
           });
         } else {
+          console.log("slime attack start");
           // 슬라임 공격
-          this.slime.play("slime-attack");
+          Slime.Play().attack();
           this.slime.once("animationcomplete", () => {
             if (this.slime) {
-              this.slime.play("slime-idle");
+              Slime.Play().idle();
             }
           });
 
           this.time.delayedCall(500, () => {
             if (!this.soldier) return;
 
-            this.soldier.play("hurt");
+            Soldier.Play().hurt();
             this.soldier.once("animationcomplete", () => {
               if (this.soldier) {
-                this.soldier.play("idle");
+                Soldier.Play().idle();
               }
             });
             const damage = Phaser.Math.Between(10, 20);
@@ -325,6 +185,7 @@ export default function MainScreen() {
       }
 
       checkBattleEnd() {
+        console.log("checkBattleEnd");
         if (this.soldierHP <= 0 || this.slimeHP <= 0) {
           // 먼저 타이머와 상태 변경
           this.battleTimer.destroy();
@@ -332,7 +193,7 @@ export default function MainScreen() {
 
           // 병사 상태 변경
           if (this.soldier) {
-            this.soldier.play("walk");
+            Soldier.Play().walk();
           }
           this.gameState = GameState.TRAVELING;
 
