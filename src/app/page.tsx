@@ -10,12 +10,12 @@ const MainScreen = dynamic(() => import("@/components/MainScreen"), {
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <h1 className="text-4xl font-bold">FantasyAvatar</h1>
+    <div className="flex flex-col items-center justify-items-center min-h-screen  gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] w-full max-w-[375px] mx-auto">
+      <h1 className="pt-10 text-4xl font-bold">FantasyAvatar</h1>
       <main className="flex flex-col row-start-2 items-start sm:items-start">
         <MainScreen />
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
+      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-end">
         {/* <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
           href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"

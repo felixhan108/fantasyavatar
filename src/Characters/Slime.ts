@@ -1,7 +1,8 @@
-import { getAsset } from "@/constant/assets";
+import { getAsset } from '@/constant/assets';
+import { CustomScene } from '@/types/CumstomScene';
 
 let status = {
-  name: "Slime",
+  name: 'Slime',
   hp: 30,
   maxHp: 30,
   attack: 1,
@@ -13,17 +14,17 @@ let cachedSprite: Phaser.GameObjects.Sprite | null = null;
 
 export const Slime = {
   LoadSpritesheet: (scene: Phaser.Scene) => {
-    scene.load.spritesheet(...getAsset("SLIME-IDLE"));
-    scene.load.spritesheet(...getAsset("SLIME-WALK"));
-    scene.load.spritesheet(...getAsset("SLIME-ATTACK"));
-    scene.load.spritesheet(...getAsset("SLIME-HURT"));
+    scene.load.spritesheet(...getAsset('SLIME-IDLE'));
+    scene.load.spritesheet(...getAsset('SLIME-WALK'));
+    scene.load.spritesheet(...getAsset('SLIME-ATTACK'));
+    scene.load.spritesheet(...getAsset('SLIME-HURT'));
   },
 
   CreateCharacter: (scene: Phaser.Scene) => {
     // 병사 애니메이션 생성
     scene.anims.create({
-      key: "SLIME-IDLE",
-      frames: scene.anims.generateFrameNumbers("SLIME-IDLE", {
+      key: 'SLIME-IDLE',
+      frames: scene.anims.generateFrameNumbers('SLIME-IDLE', {
         start: 0,
         end: 5,
       }),
@@ -32,8 +33,8 @@ export const Slime = {
     });
 
     scene.anims.create({
-      key: "SLIME-WALK",
-      frames: scene.anims.generateFrameNumbers("SLIME-WALK", {
+      key: 'SLIME-WALK',
+      frames: scene.anims.generateFrameNumbers('SLIME-WALK', {
         start: 0,
         end: 7,
       }),
@@ -42,8 +43,8 @@ export const Slime = {
     });
 
     scene.anims.create({
-      key: "SLIME-ATTACK",
-      frames: scene.anims.generateFrameNumbers("SLIME-ATTACK", {
+      key: 'SLIME-ATTACK',
+      frames: scene.anims.generateFrameNumbers('SLIME-ATTACK', {
         start: 0,
         end: 5,
       }),
@@ -52,8 +53,8 @@ export const Slime = {
     });
 
     scene.anims.create({
-      key: "SLIME-HURT",
-      frames: scene.anims.generateFrameNumbers("SLIME-HURT", {
+      key: 'SLIME-HURT',
+      frames: scene.anims.generateFrameNumbers('SLIME-HURT', {
         start: 0,
         end: 3,
       }),
@@ -64,9 +65,10 @@ export const Slime = {
     return scene.anims;
   },
 
-  AddSprite: (scene: Phaser.Scene) => {
+  AddSprite: (scene: CustomScene) => {
+    console.log('👾 AddSprite', scene.slime);
     if (!cachedSprite) {
-      cachedSprite = scene.add.sprite(100, 75, "SLIME-IDLE");
+      cachedSprite = scene.add.sprite(180, 75, 'SLIME-IDLE');
     }
     return cachedSprite;
   },
@@ -75,16 +77,20 @@ export const Slime = {
     const sprite = cachedSprite;
 
     if (!sprite) {
-      throw new Error("Sprite is not cached");
+      throw new Error('Sprite is not cached');
     }
 
     return {
-      walk: () => sprite.anims.play("SLIME-WALK"),
-      idle: () => sprite.anims.play("SLIME-IDLE"),
-      attack: () => sprite.anims.play("SLIME-ATTACK"),
-      hurt: () => sprite.anims.play("SLIME-HURT"),
+      walk: () => sprite.play('SLIME-WALK'),
+      idle: () => sprite.play('SLIME-IDLE'),
+      attack: () => sprite.play('SLIME-ATTACK'),
+      hurt: () => sprite.play('SLIME-HURT'),
     };
   },
 
   GetStatus: () => status,
+  SetHP: (hp: number) => {
+    status.hp = hp;
+  },
+  GetHP: () => status.hp,
 };
