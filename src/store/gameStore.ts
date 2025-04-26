@@ -1,12 +1,12 @@
 // stores/gameState.ts
-import { create } from 'zustand';
+import { create } from "zustand";
 
 export enum GameState {
-  INTRO = 'INTRO',
-  TRAVELING = 'TRAVELING',
-  STANDING = 'STANDING',
-  BATTLE = 'BATTLE',
-  RESULT = 'RESULT',
+  INTRO = "INTRO",
+  TRAVELING = "TRAVELING",
+  STANDING = "STANDING",
+  BATTLE = "BATTLE",
+  RESULT = "RESULT",
 }
 
 export interface Monster {
@@ -48,20 +48,20 @@ type GameStore = {
 
 export const useGameStore = create<GameStore>((set, get) => ({
   gameState: GameState.INTRO,
-  setGameState: state => set({ gameState: state }),
+  setGameState: (state) => set({ gameState: state }),
 
   soldierHP: 100,
-  setSoldierHP: hp => set({ soldierHP: hp }),
+  setSoldierHP: (hp) => set({ soldierHP: hp }),
   getSoldierHP: () => get().soldierHP,
 
   addSprite: (scene: Phaser.Scene) => {
-    const sprite = scene.add.sprite(-10, 75, 'SOLDIER-IDLE');
+    const sprite = scene.add.sprite(-10, 75, "SOLDIER-IDLE");
     return sprite;
   },
   playSoldierIdle: (scene: Phaser.Scene) => {
     scene.anims.create({
-      key: 'SOLDIER-IDLE',
-      frames: scene.anims.generateFrameNumbers('SOLDIER-IDLE', {
+      key: "SOLDIER-IDLE",
+      frames: scene.anims.generateFrameNumbers("SOLDIER-IDLE", {
         start: 0,
         end: 5,
       }),
@@ -71,8 +71,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
   playSoldierWalk: (scene: Phaser.Scene) => {
     scene.anims.create({
-      key: 'SOLDIER-WALK',
-      frames: scene.anims.generateFrameNumbers('SOLDIER-WALK', {
+      key: "SOLDIER-WALK",
+      frames: scene.anims.generateFrameNumbers("SOLDIER-WALK", {
         start: 0,
         end: 7,
       }),
@@ -82,8 +82,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
   playSoldierAttack: (scene: Phaser.Scene) => {
     scene.anims.create({
-      key: 'SOLDIER-ATTACK',
-      frames: scene.anims.generateFrameNumbers('SOLDIER-ATTACK', {
+      key: "SOLDIER-ATTACK",
+      frames: scene.anims.generateFrameNumbers("SOLDIER-ATTACK", {
         start: 0,
         end: 5,
       }),
@@ -93,8 +93,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
   playSoldierHurt: (scene: Phaser.Scene) => {
     scene.anims.create({
-      key: 'SOLDIER-HURT',
-      frames: scene.anims.generateFrameNumbers('SOLDIER-HURT', {
+      key: "SOLDIER-HURT",
+      frames: scene.anims.generateFrameNumbers("SOLDIER-HURT", {
         start: 0,
         end: 3,
       }),
@@ -103,14 +103,14 @@ export const useGameStore = create<GameStore>((set, get) => ({
     });
   },
   addSlimeSprite: (scene: Phaser.Scene) => {
-    const sprite = scene.add.sprite(180, 75, 'SLIME-IDLE');
+    const sprite = scene.add.sprite(180, 75, "SLIME-IDLE");
     sprite.setFlipX(true);
     return sprite;
   },
   playSlimeIdle: (scene: Phaser.Scene) => {
     scene.anims.create({
-      key: 'SLIME-IDLE',
-      frames: scene.anims.generateFrameNumbers('SLIME-IDLE', {
+      key: "SLIME-IDLE",
+      frames: scene.anims.generateFrameNumbers("SLIME-IDLE", {
         start: 0,
         end: 5,
       }),
@@ -120,8 +120,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
   playSlimeWalk: (scene: Phaser.Scene) => {
     scene.anims.create({
-      key: 'SLIME-WALK',
-      frames: scene.anims.generateFrameNumbers('SLIME-WALK', {
+      key: "SLIME-WALK",
+      frames: scene.anims.generateFrameNumbers("SLIME-WALK", {
         start: 0,
         end: 7,
       }),
@@ -131,8 +131,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
   playSlimeAttack: (scene: Phaser.Scene) => {
     scene.anims.create({
-      key: 'SLIME-ATTACK',
-      frames: scene.anims.generateFrameNumbers('SLIME-ATTACK', {
+      key: "SLIME-ATTACK",
+      frames: scene.anims.generateFrameNumbers("SLIME-ATTACK", {
         start: 0,
         end: 5,
       }),
@@ -142,8 +142,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
   playSlimeHurt: (scene: Phaser.Scene) => {
     scene.anims.create({
-      key: 'SLIME-HURT',
-      frames: scene.anims.generateFrameNumbers('SLIME-HURT', {
+      key: "SLIME-HURT",
+      frames: scene.anims.generateFrameNumbers("SLIME-HURT", {
         start: 0,
         end: 3,
       }),
@@ -152,10 +152,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
     });
   },
   slimeHP: 30,
-  setSlimeHP: hp => set({ slimeHP: hp }),
+  setSlimeHP: (hp) => set({ slimeHP: hp }),
   getSlimeHP: () => get().slimeHP,
   currentMonster: null,
-  setCurrentMonster: monster => set({ currentMonster: monster }),
+  setCurrentMonster: (monster) => set({ currentMonster: monster }),
   updateMonsterHP: (monster: Monster, hp: number) => {
     set({ currentMonster: { ...monster, HP: hp } });
   },
