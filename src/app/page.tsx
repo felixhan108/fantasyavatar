@@ -1,7 +1,9 @@
 "use client";
 
+import { useGameStore } from "@/store/gameStore";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import { useEffect } from "react";
 
 // Pharser is not supported in server side rendering
 const MainScreen = dynamic(() => import("@/components/MainScreen"), {
@@ -9,6 +11,15 @@ const MainScreen = dynamic(() => import("@/components/MainScreen"), {
 });
 
 export default function Home() {
+  useEffect(() => {
+    // 캐릭터 직업 선택
+    useGameStore.getState().setCharacterJob("SOLDIER");
+    console.log("👣 캐릭터 직업", useGameStore.getState().characterJob);
+    // 해당 직업 데이터 호출
+    useGameStore.getState().setCharacter();
+    console.log("👣 캐릭터 데이터", useGameStore.getState().character);
+  }, []);
+
   return (
     <div className="flex flex-col items-center justify-items-center min-h-screen  gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] w-full max-w-[375px] mx-auto">
       <h1 className="pt-10 text-4xl font-bold">FantasyAvatar</h1>

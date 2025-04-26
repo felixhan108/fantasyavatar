@@ -2,20 +2,41 @@
 
 import { CustomScene } from "@/types/CustomScene";
 
-type MonsterData = {
+type MonsterStatus = {
+  HP: number;
+  maxHP: number;
+  attack: number;
+  defense: number;
+  exp: number;
+  gold: number;
+};
+
+export type MonsterData = {
   key: string;
+  status: MonsterStatus;
   preload: (scene: CustomScene) => void;
   createAnims: (scene: CustomScene) => void;
   createSprite: (scene: CustomScene) => Phaser.GameObjects.Sprite;
-  attackAnim: string;
   idleAnim: string;
+  walkAnim: string;
+  attackAnim: string;
   hurtAnim: string;
   deadAnim: string;
 };
 
+export type MonsterType = keyof typeof Monsters;
+
 export const Monsters: Record<string, MonsterData> = {
   SLIME: {
     key: "SLIME",
+    status: {
+      HP: 30,
+      maxHP: 30,
+      attack: 1,
+      defense: 0,
+      exp: 30,
+      gold: 30,
+    },
     preload: (scene) => {
       scene.load.spritesheet("SLIME-IDLE", "/assets/monster/Slime-Idle.png", {
         frameWidth: 100,
@@ -95,14 +116,23 @@ export const Monsters: Record<string, MonsterData> = {
       sprite.flipX = true;
       return sprite;
     },
-    attackAnim: "SLIME-ATTACK",
     idleAnim: "SLIME-IDLE",
+    walkAnim: "SLIME-WALK",
+    attackAnim: "SLIME-ATTACK",
     hurtAnim: "SLIME-HURT",
     deadAnim: "SLIME-DEAD",
   },
 
   SKELETON: {
     key: "SKELETON",
+    status: {
+      HP: 50,
+      maxHP: 50,
+      attack: 3,
+      defense: 0,
+      exp: 50,
+      gold: 50,
+    },
     preload: (scene) => {
       scene.load.spritesheet(
         "SKELETON-IDLE",
@@ -156,10 +186,19 @@ export const Monsters: Record<string, MonsterData> = {
         repeat: -1,
       });
       scene.anims.create({
+        key: "SKELETON-WALK",
+        frames: scene.anims.generateFrameNumbers("SKELETON-WALK", {
+          start: 0,
+          end: 5,
+        }),
+        frameRate: 12,
+        repeat: -1,
+      });
+      scene.anims.create({
         key: "SKELETON-ATTACK",
         frames: scene.anims.generateFrameNumbers("SKELETON-ATTACK", {
           start: 0,
-          end: 6,
+          end: 5,
         }),
         frameRate: 12,
         repeat: 0,
@@ -189,8 +228,9 @@ export const Monsters: Record<string, MonsterData> = {
       sprite.flipX = true;
       return sprite;
     },
-    attackAnim: "SKELETON-ATTACK",
     idleAnim: "SKELETON-IDLE",
+    walkAnim: "SKELETON-WALK",
+    attackAnim: "SKELETON-ATTACK",
     hurtAnim: "SKELETON-HURT",
     deadAnim: "SKELETON-DEAD",
   },
