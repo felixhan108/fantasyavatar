@@ -1,25 +1,50 @@
-// stores/gameState.ts
-import { Character } from "@/Characters/Character";
-import { create } from "zustand";
+import { Weapons } from '@/assets/Weapons';
+import { Character } from '@/Characters/Character';
+import { Characters } from '@/assets/Characters';
+import { create } from 'zustand';
 
 export enum GameState {
-  INTRO = "INTRO",
-  TRAVELING = "TRAVELING",
-  STANDING = "STANDING",
-  BATTLE = "BATTLE",
-  RESULT = "RESULT",
+  INTRO = 'INTRO',
+  TRAVELING = 'TRAVELING',
+  ENCOUNTER = 'ENCOUNTER',
+  STANDING = 'STANDING',
+  BATTLE = 'BATTLE',
+  RESULT = 'RESULT',
 }
 
-export const useGameStore = create((set, get) => ({
+export interface GameStore {
+  gameState: GameState;
+  setGameState: (state: GameState) => void;
+  characterJob: string | null;
+  setCharacterJob: (job: string) => void;
+  character: (typeof Characters)[keyof typeof Characters] | null;
+  setCharacter: () => void;
+  characterSprite: any;
+  setCharacterSprite: (sprite: any) => void;
+  monsterType: string | null;
+  setMonsterType: (type: string) => void;
+  stopBattle: boolean;
+  setStopBattle: (stop: boolean) => void;
+  isBackgroundMoving: boolean;
+  setIsBackgroundMoving: (moving: boolean) => void;
+  characterStatus: any;
+  setCharacterStatus: (character: any) => void;
+  currentMonsterStatus: any;
+  setCurrentMonsterStatus: (status: any) => void;
+  setMonsterStatus: (monsterStatus: any, hp: number) => void;
+  clearMonster: () => void;
+}
+
+export const useGameStore = create<GameStore>((set, get) => ({
   gameState: GameState.INTRO,
   setGameState: (state: GameState) => set({ gameState: state }),
   characterJob: null,
   setCharacterJob: (job: string) => set({ characterJob: job }),
-  character: null, // 처음은 null
+  character: null,
   setCharacter: () => {
     const job = get().characterJob; // ✅ get으로 읽어옴
     if (job) {
-      set({ character: Character[job] });
+      set({ character: Characters[job as keyof typeof Characters] });
     }
   },
   characterSprite: null,
@@ -29,20 +54,48 @@ export const useGameStore = create((set, get) => ({
   stopBattle: false,
   setStopBattle: (stop: boolean) => set({ stopBattle: stop }),
 
-  currentMonster: null,
-  setCurrentMonster: (monster: any, sprite: any) =>
+  isBackgroundMoving: false,
+  setIsBackgroundMoving: (moving: boolean) => set({ isBackgroundMoving: moving }),
+
+  characterStatus: null,
+  setCharacterStatus: (character: any) =>
     set({
-      currentMonster: {
-        name: monster.key,
-        HP: monster.status.HP,
-        maxHP: monster.status.maxHP,
-        attack: monster.status.attack,
-        defense: monster.status.defense,
-        exp: monster.status.exp,
+      characterStatus: {
+        name: character.key,
+        level: character.status.level,
+        hp: character.status.hp,
+        maxHP: character.status.maxHP,
+        attack: character.status.attack,
+        defense: character.status.defense,
+        exp: character.status.exp,
+        gold: character.status.gold,
+        weapon: character.status.weapon,
       },
     }),
-  updateMonsterHP: (monster: any, hp: number) => {
-    set({ currentMonster: { ...monster, HP: hp } });
+  currentMonsterStatus: null,
+  setCurrentMonsterStatus: (status: {
+    name: string;
+    hp: number;
+    maxHP: number;
+    attack: number;
+    defense: number;
+    exp: number;
+    gold: number;
+  }) =>
+    set({
+      currentMonsterStatus: {
+        name: status.name ?? 'nobody',
+        hp: status.hp ?? 0,
+        maxHP: status.maxHP ?? 0,
+        attack: status.attack ?? 0,
+        defense: status.defense ?? 0,
+        exp: status.exp ?? 0,
+        gold: status.gold ?? 0,
+      },
+    }),
+  setMonsterStatus: (monsterStatus: any, hp: number) => {
+    set({ currentMonsterStatus: { ...monsterStatus, hp: hp } });
   },
-  clearMonster: () => set({ currentMonster: null }),
+
+  clearMonster: () => set({ currentMonsterStatus: null }),
 }));

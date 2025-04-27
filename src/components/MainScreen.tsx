@@ -1,142 +1,181 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState } from "react";
-import * as Phaser from "phaser";
-import { CustomScene } from "@/types/CustomScene";
-import { GameState, useGameStore } from "@/store/gameStore";
+import { useEffect, useRef, useState } from 'react';
+import * as Phaser from 'phaser';
 
-import { Character } from "@/Characters/Character";
-import { Monsters } from "@/Monsters/Monster";
-import RandomEncounter from "@/Battle/RandomEncounter";
-import StartBattle from "@/Battle/StartBattle";
+import { Characters, CharacterStatus } from '@/assets/Characters';
+import { Monsters } from '@/assets/Monsters';
+
+import { useGameStore, GameState } from '@/store/gameStore';
+
+// Utils
+import { rollDice } from '@/utils/rollDice';
 
 export default function MainScreen() {
   const phaserRef = useRef<HTMLDivElement>(null);
-  const gameStore = useGameStore();
-  const character = gameStore.character;
+  const [CharacterInfo, setCharacterInfo] = useState<CharacterStatus | null>(null);
+
+  useEffect(() => {
+    setCharacterInfo(useGameStore.getState().characterStatus);
+  }, []);
 
   useEffect(() => {
     class MainScene extends Phaser.Scene {
-      public background!: Phaser.GameObjects.TileSprite;
-      public soldier!: Phaser.GameObjects.Sprite;
-      public encounterStarted = false;
+      background!: Phaser.GameObjects.TileSprite;
+      character!: (typeof Characters)[keyof typeof Characters];
+      Monsters!: (typeof Monsters)[keyof typeof Monsters];
+      characterSprite!: Phaser.GameObjects.Sprite;
 
       constructor() {
-        super("MainScene");
+        super('MainScene');
       }
 
       preload() {
-        this.load.image("BACKGROUND", "/assets/bg/forest.png");
-        const scene = this as unknown as CustomScene; // 안전 복사
-        Object.values(Character).forEach((character) =>
-          character.preload(scene)
-        );
-        Object.values(Monsters).forEach((monster) => monster.preload(scene));
+        this.load.image('BACKGROUND', '/assets/bg/forest.png'); // 배경 이미지 로드
+        Object.values(Characters).forEach((character) => character.preload(this)); // 모든 캐릭터 로드
+        Object.values(Monsters).forEach((monster) => monster.preload(this)); // 모든 몬스터 로드
       }
 
       create() {
-        this.background = this.add
-          .tileSprite(0, 0, 480, 160, "BACKGROUND")
-          .setOrigin(0, 0);
+        // 백그라운드 이미지 생성
+        this.background = this.add.tileSprite(0, 0, 480, 160, 'BACKGROUND').setOrigin(0, 0);
+        Object.values(Characters).forEach((character) => character.createAnims(this));
+        Object.values(Monsters).forEach((monster) => monster.createAnims(this));
 
-        const scene = this as unknown as CustomScene; // 안전 복사
-        Object.values(Character).forEach((character) =>
-          character.createAnims(scene)
-        );
-        Object.values(Monsters).forEach((monster) =>
-          monster.createAnims(scene)
-        );
+        this.character = useGameStore.getState()
+          .character as (typeof Characters)[keyof typeof Characters];
 
         // 캐릭터 Sprite 생성
         // ⭐️ 생성을 안하고 스토어에 바로 잡아 넣어서 생성되기 전 명령어만 들어가는 참사가 일어남
-        const characterSprite = character.createSprite(scene);
-        // 생성 후 스토어에 저장
-        gameStore.setCharacterSprite(characterSprite);
 
-        console.log("👣 캐릭터 스프라이트", characterSprite);
+        if (this.character) {
+          console.log('👣 캐릭터 스프라이트 생성');
+          this.characterSprite = this.character.createSprite(this) as Phaser.GameObjects.Sprite;
+          useGameStore.getState().setCharacterSprite(this.characterSprite);
+          this.characterSprite.play(this.character.idleAnim);
+        }
 
-        characterSprite.play(character.idleAnim);
+        // 👣 Roop START
+        this.goToState('INTRO');
+      }
 
-        // 👣 INTRO -> TRAVELING -> INCOUNTER
+      update(time: number, delta: number) {
+        if (useGameStore.getState().isBackgroundMoving) {
+          this.background.tilePositionX += 0.5;
+        }
+      }
+
+      public goToState(STATE: String) {
+        console.log('👣 상태변경', STATE);
+        useGameStore.getState().setGameState(STATE as GameState);
+        this.handleState();
+      }
+
+      public handleState() {
+        switch (useGameStore.getState().gameState) {
+          case GameState.INTRO:
+            console.log('👉 INTRO');
+            this.startIntro();
+            break;
+          case GameState.TRAVELING:
+            console.log('👉 TRAVELING');
+            this.startTraveling();
+            break;
+          case GameState.ENCOUNTER:
+            console.log('👉 ENCOUNTER');
+            this.startEncounter();
+            break;
+          case GameState.BATTLE:
+            console.log('👉 BATTLE');
+            this.startBattle();
+            break;
+          case GameState.RESULT:
+            console.log('👉 RESULT');
+            this.startResult();
+            break;
+        }
+      }
+
+      public startIntro() {
         this.tweens.add({
-          targets: characterSprite,
+          targets: this.characterSprite,
           x: 60,
           duration: 2000,
-          ease: "Linear",
+          ease: 'Linear',
           onComplete: () => {
-            characterSprite.play(character.idleAnim);
+            this.goToState('TRAVELING');
+          },
+        });
+      }
 
-            this.time.delayedCall(1000, () => {
-              console.log("👣 GameState", useGameStore.getState().gameState);
-              useGameStore.getState().setGameState(GameState.TRAVELING);
-              console.log("👣 GameState", useGameStore.getState().gameState);
-              characterSprite.play(character.walkAnim);
+      public startTraveling() {
+        useGameStore.getState().setIsBackgroundMoving(true);
+        this.time.delayedCall(rollDice(2000, 5000), () => {
+          console.log('🎲 만난시간', rollDice(2000, 5000));
+          this.goToState('ENCOUNTER');
+        });
+      }
+
+      public startEncounter() {
+        useGameStore.getState().setIsBackgroundMoving(true);
+        const monsterType = rollDice(1, 10) <= 7 ? 'SLIME' : 'SKELETON';
+        console.log('🎲 주사위 결과', rollDice(1, 10));
+        console.log('👹 몬스터 타입', monsterType);
+        useGameStore.getState().setMonsterType(monsterType);
+        this.goToState('BATTLE');
+      }
+
+      public startBattle() {
+        const Monster = Monsters[useGameStore.getState().monsterType as keyof typeof Monsters];
+        const MonsterSprite = Monster.createSprite(this);
+        MonsterSprite.play(Monster.walkAnim);
+        this.tweens.add({
+          targets: MonsterSprite,
+          x: 100,
+          duration: 2000,
+          ease: 'Linear',
+          onComplete: () => {
+            useGameStore.getState().setIsBackgroundMoving(false);
+            console.log('👹 몬스터 등장!');
+
+            // 치고받기
+            this.time.addEvent({
+              delay: 1000,
+              loop: true,
+              callback: () => {
+                console.log('🎲 주사위 결과 :', rollDice(1, 10));
+                if (rollDice(1, 10) <= 7) {
+                  this.characterSprite.play(this.character.attackAnim);
+                  this.characterSprite.once('animationcomplete', () => {
+                    this.characterSprite.play(this.character.idleAnim);
+                  });
+                  this.time.delayedCall(300, () => {
+                    MonsterSprite.play(Monster.hurtAnim);
+                    MonsterSprite.once('animationcomplete', () => {
+                      MonsterSprite.play(Monster.idleAnim);
+                    });
+                  });
+                } else {
+                  MonsterSprite.play(Monster.attackAnim);
+                  MonsterSprite.once('animationcomplete', () => {
+                    MonsterSprite.play(Monster.idleAnim);
+                  });
+                  this.time.delayedCall(300, () => {
+                    this.characterSprite.play(this.character.hurtAnim);
+                    this.characterSprite.once('animationcomplete', () => {
+                      this.characterSprite.play(this.character.idleAnim);
+                    });
+                  });
+                }
+              },
             });
           },
         });
       }
 
-      update(time: number, delta: number) {
-        switch (useGameStore.getState().gameState) {
-          case GameState.TRAVELING:
-            this.Treveling(delta);
-            break;
-          case GameState.BATTLE:
-            this.Battle(delta);
-            break;
-          case GameState.STANDING:
-            this.Standing(delta);
-            break;
-          case GameState.RESULT:
-            this.Result(delta);
-            break;
-        }
-      }
-
-      private encounterStarted = false;
-      private stopTraveling = false;
-
-      private Treveling(delta: number) {
-        console.log("👣 트레블링");
-        // 1. 배경 이동
-        this.background.tilePositionX += 0.5 * (delta / 16.67); // (delta/16.67로 보정하면 60FPS 기준 0.5씩 이동)
-        // 만약 stopTraveling이 true이면 트렐빙 중지
-        // 중지되고 다음 함수 실행!
-        if (this.stopTraveling) return;
-        this.stopTraveling = true;
-        console.log("👣 트레블링 중지");
-        RandomEncounter(this, delta);
-      }
-
-      private Battle(delta: number) {
-        // 몬스터가 등장해서 delay 2000 동안은 배경을 움직이기
-        this.background.tilePositionX += 0.5 * (delta / 16.67);
-        console.log("⚔️ BATTLE");
-        if (useGameStore.getState().stopBattle) return;
-        useGameStore.getState().setStopBattle(true);
-        console.log("⚔️ BATTLE 중지");
-        StartBattle(this, delta);
-
-        // if (Phaser.Math.Between(0, 1000) < 100) {
-        //   useGameStore.getState().setGameState(GameState.RESULT);
-        //   console.log("배틀 종료 → 결과화면 이동");
-        // }
-      }
-
-      private resultHandled = false; // 결과 처리 여부 플래그
-
-      private Result(delta: number) {
-        if (this.resultHandled) return; // 이미 처리했으면 더 이상 실행 안 함
-
-        console.log("RESULT");
-        this.resultHandled = true; // 결과 처리 플래그 설정
-        // 결과 출력 후 다시 걷기
-        // this.time.delayedCall(2000, () => {
-        //   console.log("결과 출력 완료 → 다시 걷기 시작");
-
-        //   useGameStore.getState().setGameState(GameState.TRAVELING);
-        //   this.resultHandled = false; // 결과 처리 플래그 초기화
-        // });
+      public startResult() {
+        useGameStore.getState().setIsBackgroundMoving(false);
+        this.goToState('TRAVELING');
       }
     }
 
@@ -162,6 +201,18 @@ export default function MainScreen() {
   return (
     <>
       <div ref={phaserRef} />
+      <div>
+        <p>Level : {CharacterInfo?.level}</p>
+        <p>HP : {CharacterInfo?.hp}</p>
+        <p>Attack : {CharacterInfo?.attack}</p>
+        <p>Defense : {CharacterInfo?.defense}</p>
+        <p>Exp : {CharacterInfo?.exp}</p>
+        <p>Gold : {CharacterInfo?.gold}</p>
+        <p>Weapon : {CharacterInfo?.weapon.name}</p>
+        <p>- Attack : {CharacterInfo?.weapon.bonusAttack}</p>
+        <p>- Description : {CharacterInfo?.weapon.description}</p>
+        <p>- Type : {CharacterInfo?.weapon.type}</p>
+      </div>
     </>
   );
 }

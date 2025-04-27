@@ -1,26 +1,25 @@
-import { CustomScene } from "@/types/CustomScene";
-import { useGameStore, GameState } from "@/store/gameStore";
+import { CustomScene } from '@/types/CustomScene';
+import { useGameStore, GameState } from '@/store/gameStore';
 
-export default function RandomEncounter(scene: Phaser.Scene, delta: number) {
-  console.log("👣 랜덤 인카운터");
+export default function RandomMonsterEncounter(scene: CustomScene, delta: number) {
+  console.log('👣 랜덤 몬스터 인카운터');
+  // //2~5의 값 구하기
+  // const randomTime = Phaser.Math.Between(1000, 3000);
+  // console.log('🎲 ', randomTime);
 
-  //2~5의 값 구하기
-  const randomTime = Phaser.Math.Between(2000, 5000);
-  console.log("🎲 ", randomTime);
+  // //구한 값 만큼 대기 후 인카운터 발생
+  // scene.time.delayedCall(randomTime, () => {
+  //   console.log('🎲 인카운터 발생');
+  //   // 어떤 몬스터랑 싸울지 결정
+  //   const monsterRoll = Phaser.Math.Between(1, 10);
+  //   const monsterType = monsterRoll <= 7 ? 'SLIME' : 'SKELETON';
 
-  //구한 값 만큼 대기 후 인카운터 발생
-  scene.time.delayedCall(randomTime, () => {
-    console.log("🎲 인카운터 발생");
-    // 어떤 몬스터랑 싸울지 결정
-    const monsterRoll = Phaser.Math.Between(1, 10);
-    const monsterType = monsterRoll <= 7 ? "SLIME" : "SKELETON";
+  // useGameStore.getState().setMonsterType(monsterType);
+  // console.log('👣 몬스터 타입: ', useGameStore.getState().monsterType);
 
-    useGameStore.getState().setMonsterType(monsterType);
-    console.log("👣 몬스터 타입: ", useGameStore.getState().monsterType);
-
-    useGameStore.getState().setGameState(GameState.BATTLE);
-    scene.stopTraveling = false;
-  });
+  // useGameStore.getState().setGameState(GameState.BATTLE);
+  // scene.stopTraveling = false;
+  // });
 
   // 인카운터 관련 상태
   // 인카운터 관련 상태
