@@ -14,6 +14,7 @@ import { rollDice } from '@/utils/rollDice';
 export default function MainScreen() {
   const phaserRef = useRef<HTMLDivElement>(null);
   const [CharacterInfo, setCharacterInfo] = useState<CharacterStatus | null>(null);
+  const [DiceResult, setDiceResult] = useState<number>(0);
 
   useEffect(() => {
     setCharacterInfo(useGameStore.getState().characterStatus);
@@ -143,8 +144,11 @@ export default function MainScreen() {
               delay: 1000,
               loop: true,
               callback: () => {
-                console.log('🎲 주사위 결과 :', rollDice(1, 10));
-                if (rollDice(1, 10) <= 7) {
+                const diceResult = rollDice(1, 10);
+                setDiceResult(diceResult);
+
+                console.log('🎲 주사위 결과 :', diceResult);
+                if (diceResult <= 7) {
                   this.characterSprite.play(this.character.attackAnim);
                   this.characterSprite.once('animationcomplete', () => {
                     this.characterSprite.play(this.character.idleAnim);
@@ -200,6 +204,7 @@ export default function MainScreen() {
 
   return (
     <>
+      <div>🎲 {DiceResult}</div>
       <div ref={phaserRef} />
       <div>
         <p>Level : {CharacterInfo?.level}</p>
