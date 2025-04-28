@@ -1,0 +1,8 @@
+export enum GameState {
+  INTRO = 'INTRO',
+  TRAVELING = 'TRAVELING',
+  ENCOUNTER = 'ENCOUNTER',
+  STANDING = 'STANDING',
+  BATTLE = 'BATTLE',
+  RESULT = 'RESULT',
+}

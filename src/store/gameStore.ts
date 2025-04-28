@@ -1,39 +1,7 @@
-import { Weapons } from '@/assets/Weapons';
-import { Character } from '@/Characters/Character';
+import { WeaponType } from '@/Items/Weapon';
 import { Characters } from '@/assets/Characters';
 import { create } from 'zustand';
-
-export enum GameState {
-  INTRO = 'INTRO',
-  TRAVELING = 'TRAVELING',
-  ENCOUNTER = 'ENCOUNTER',
-  STANDING = 'STANDING',
-  BATTLE = 'BATTLE',
-  RESULT = 'RESULT',
-}
-
-export interface GameStore {
-  gameState: GameState;
-  setGameState: (state: GameState) => void;
-  characterJob: string | null;
-  setCharacterJob: (job: string) => void;
-  character: (typeof Characters)[keyof typeof Characters] | null;
-  setCharacter: () => void;
-  characterSprite: any;
-  setCharacterSprite: (sprite: any) => void;
-  monsterType: string | null;
-  setMonsterType: (type: string) => void;
-  stopBattle: boolean;
-  setStopBattle: (stop: boolean) => void;
-  isBackgroundMoving: boolean;
-  setIsBackgroundMoving: (moving: boolean) => void;
-  characterStatus: any;
-  setCharacterStatus: (character: any) => void;
-  currentMonsterStatus: any;
-  setCurrentMonsterStatus: (status: any) => void;
-  setMonsterStatus: (monsterStatus: any, hp: number) => void;
-  clearMonster: () => void;
-}
+import { GameState } from '@/types/GameState';
 
 export const useGameStore = create<GameStore>((set, get) => ({
   gameState: GameState.INTRO,
@@ -48,7 +16,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     }
   },
   characterSprite: null,
-  setCharacterSprite: (sprite: any) => set({ characterSprite: sprite }),
+  setCharacterSprite: (sprite: Phaser.GameObjects.TileSprite) => set({ characterSprite: sprite }),
   monsterType: null,
   setMonsterType: (type: string) => set({ monsterType: type }),
   stopBattle: false,
@@ -58,7 +26,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   setIsBackgroundMoving: (moving: boolean) => set({ isBackgroundMoving: moving }),
 
   characterStatus: null,
-  setCharacterStatus: (character: any) =>
+  setCharacterStatus: (character: characterStatusType) =>
     set({
       characterStatus: {
         name: character.key,
@@ -93,7 +61,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         gold: status.gold ?? 0,
       },
     }),
-  setMonsterStatus: (monsterStatus: any, hp: number) => {
+  setMonsterStatus: (monsterStatus: monsterStatusType, hp: number) => {
     set({ currentMonsterStatus: { ...monsterStatus, hp: hp } });
   },
 

@@ -1,15 +1,4 @@
-import { Weapons, WeaponType } from '@/assets/Weapons';
-
-export interface CharacterStatus {
-  level: number;
-  hp: number;
-  maxHp: number;
-  attack: number;
-  defense: number;
-  exp: number;
-  gold: number;
-  weapon: WeaponType;
-}
+import { Weapons } from './Weapons';
 
 export const Characters = {
   SOLDIER: {

@@ -60,13 +60,13 @@ export default function MainScreen() {
         this.goToState('INTRO');
       }
 
-      update(time: number, delta: number) {
+      update() {
         if (useGameStore.getState().isBackgroundMoving) {
           this.background.tilePositionX += 0.5;
         }
       }
 
-      public goToState(STATE: String) {
+      public goToState(STATE: string) {
         console.log('👣 상태변경', STATE);
         useGameStore.getState().setGameState(STATE as GameState);
         this.handleState();

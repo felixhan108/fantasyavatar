@@ -1,10 +1,3 @@
-export type WeaponType = {
-  name: string;
-  bonusAttack: number;
-  description: string;
-  type: string;
-};
-
 export const Weapons: { [key: string]: WeaponType } = {
   rustySword: {
     name: 'Rusty Sword',
