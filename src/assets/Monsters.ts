@@ -1,10 +1,12 @@
-export const Monsters = {
+import { MonsterAssetType } from "@/types/AssetsType";
+
+export const Monsters:{ [key: string]: MonsterAssetType} = {
   SLIME: {
     key: 'SLIME',
     status: {
       hp: 30,
       maxHP: 30,
-      attack: 1,
+      attack: 100,
       defense: 0,
       exp: 30,
       gold: 30,
@@ -96,7 +98,7 @@ export const Monsters = {
     status: {
       hp: 50,
       maxHP: 50,
-      attack: 3,
+      attack: 300,
       defense: 0,
       exp: 50,
       gold: 50,

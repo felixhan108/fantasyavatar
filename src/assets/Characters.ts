@@ -1,6 +1,7 @@
+import { CharacterAssetType } from '@/types/AssetsType';
 import { Weapons } from './Weapons';
 
-export const Characters = {
+export const Characters: { [key: string]: CharacterAssetType} = {
   SOLDIER: {
     key: 'SOLDIER',
     status: {
@@ -94,3 +95,4 @@ export const Characters = {
     deadAnim: 'SOLDIER-DEAD',
   },
 };
+

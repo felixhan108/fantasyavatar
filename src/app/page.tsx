@@ -12,13 +12,9 @@ const MainScreen = dynamic(() => import('@/components/MainScreen'), {
 
 export default function Home() {
   useEffect(() => {
-    // 캐릭터 직업 선택
+    // 캐릭터 직업 선택 -> 관련 assets 호출 -> status 설정
     useGameStore.getState().setCharacterJob('SOLDIER');
-    console.log('👣 캐릭터 직업', useGameStore.getState().characterJob);
-    // 해당 직업 데이터 호출
-    useGameStore.getState().setCharacter();
-    console.log('👣 캐릭터 데이터', useGameStore.getState().character);
-    useGameStore.getState().setCharacterStatus(useGameStore.getState().character);
+    useGameStore.getState().setCharacterStatus();
   }, []);
 
   return (

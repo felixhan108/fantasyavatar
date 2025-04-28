@@ -5,4 +5,5 @@ export enum GameState {
   STANDING = 'STANDING',
   BATTLE = 'BATTLE',
   RESULT = 'RESULT',
+  GAMEOVER = 'GAMEOVER',
 }
