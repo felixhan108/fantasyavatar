@@ -104,6 +104,8 @@ export default function MainScreen() {
       }
 
       public startIntro() {
+        this.characterSprite.play(this.character.walkAnim);
+        
         this.tweens.add({
           targets: this.characterSprite,
           x: 60,
