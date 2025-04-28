@@ -1,3 +1,5 @@
+import { WeaponType } from '@/types/AssetsType';
+
 export const Weapons: { [key: string]: WeaponType } = {
   rustySword: {
     name: 'Rusty Sword',

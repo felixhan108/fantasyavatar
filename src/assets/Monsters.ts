@@ -6,7 +6,7 @@ export const Monsters:{ [key: string]: MonsterAssetType} = {
     status: {
       hp: 30,
       maxHP: 30,
-      attack: 100,
+      attack: 1,
       defense: 0,
       exp: 30,
       gold: 30,
@@ -98,7 +98,7 @@ export const Monsters:{ [key: string]: MonsterAssetType} = {
     status: {
       hp: 50,
       maxHP: 50,
-      attack: 300,
+      attack: 3,
       defense: 0,
       exp: 50,
       gold: 50,

@@ -1,6 +1,3 @@
-import { Characters } from "@/assets/Characters";
-import { Weapons } from "@/assets/Weapons";
-
 export interface CommonUnitType {
   key: string;
   preload: (scene: Phaser.Scene)=> void;
