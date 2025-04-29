@@ -2,7 +2,7 @@ import { CharacterAssetType } from '@/types/AssetsType';
 
 export class CharacterController {
   constructor(
-    private scene: Phaser.Scene,
+    public scene: Phaser.Scene,
     public sprite: Phaser.GameObjects.Sprite,
     public asset: CharacterAssetType
   ) {}
