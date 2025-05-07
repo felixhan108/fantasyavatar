@@ -7,7 +7,6 @@ import * as Phaser from 'phaser';
 import { Characters } from '@/assets/Characters';
 import { Monsters } from '@/assets/Monsters';
 
-
 // Zustand
 import { useGameStore } from '@/store/gameStore';
 
@@ -16,7 +15,12 @@ import _ from 'lodash';
 import { rollDice } from '@/utils/rollDice';
 
 // Types
-import {CharacterStatusType, CharacterAssetType, MonsterAssetType, MonsterStatusType} from '@/types/AssetsType';
+import {
+  CharacterStatusType,
+  CharacterAssetType,
+  MonsterAssetType,
+  MonsterStatusType,
+} from '@/types/AssetsType';
 import { GameState } from '@/constant/GameState';
 
 export default function MainScreen() {
@@ -43,18 +47,27 @@ export default function MainScreen() {
 
       preload() {
         this.load.image('BACKGROUND', '/assets/bg/forest.png'); // 배경 이미지 로드
-        _.forEach(Characters, (character) => {character.preload(this);});
-        _.forEach(Monsters, (monster) => {monster.preload(this);});
+        _.forEach(Characters, (character) => {
+          character.preload(this);
+        });
+        _.forEach(Monsters, (monster) => {
+          monster.preload(this);
+        });
       }
 
       create() {
         // 백그라운드 이미지 생성
         this.background = this.add.tileSprite(0, 0, 480, 160, 'BACKGROUND').setOrigin(0, 0);
-        _.forEach(Characters, (character) => {character.createAnims(this);});
-        _.forEach(Monsters, (monster) => {monster.createAnims(this);});
+        _.forEach(Characters, (character) => {
+          character.createAnims(this);
+        });
+        _.forEach(Monsters, (monster) => {
+          monster.createAnims(this);
+        });
 
         // 캐릭터 Sprite 생성
-        this.character = Characters[useGameStore.getState().characterJob as keyof typeof Characters];
+        this.character =
+          Characters[useGameStore.getState().characterJob as keyof typeof Characters];
         this.characterSprite = this.character.createSprite(this);
         this.characterSprite.play(this.character.idleAnim);
 
@@ -105,7 +118,7 @@ export default function MainScreen() {
 
       public startIntro() {
         this.characterSprite.play(this.character.walkAnim);
-        
+
         this.tweens.add({
           targets: this.characterSprite,
           x: 60,
@@ -171,7 +184,7 @@ export default function MainScreen() {
                     });
                   });
                   // HP 감소
-                  const MonsterStatus = useGameStore.getState().monsterStatus
+                  const MonsterStatus = useGameStore.getState().monsterStatus;
                   const characterStatus = useGameStore.getState().characterStatus;
                   if (MonsterStatus) {
                     if (characterStatus) {
@@ -200,24 +213,23 @@ export default function MainScreen() {
 
                     this.characterSprite.once('animationcomplete', () => {
                       // HP 감소
-                      const MonsterStatus = useGameStore.getState().monsterStatus
+                      const MonsterStatus = useGameStore.getState().monsterStatus;
                       const characterStatus = useGameStore.getState().characterStatus;
                       if (characterStatus && MonsterStatus) {
                         characterStatus.hp -= MonsterStatus.attack;
                         if (characterStatus.hp <= 0) {
                           this.characterSprite.play(this.character.deadAnim);
-                          
+
                           this.characterSprite.once('animationcomplete', () => {
                             this.goToState(GameState.GAMEOVER);
                             this.time.removeAllEvents();
                           });
-                        }else {
+                        } else {
                           this.characterSprite.play(this.character.idleAnim);
                         }
                       }
                     });
                   });
-
                 }
               },
             });
@@ -249,7 +261,6 @@ export default function MainScreen() {
         //   this.goToState(GameState.INTRO);
         // });
       }
-
     }
 
     const config: Phaser.Types.Core.GameConfig = {

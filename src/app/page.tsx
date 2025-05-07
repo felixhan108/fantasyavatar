@@ -1,57 +1,20 @@
 'use client';
 
-import { useGameStore } from '@/store/gameStore';
+import Interface from '@/components/modules/Interface';
+import Intro from '@/components/template/Intro';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { useEffect } from 'react';
 
 // Pharser is not supported in server side rendering
-const MainScreen = dynamic(() => import('@/components/MainScreen'), {
+const Forest = dynamic(() => import('@/components/Forest'), {
   ssr: false,
 });
 
 export default function Home() {
-  useEffect(() => {
-    // 캐릭터 직업 선택 -> 관련 assets 호출 -> status 설정
-    useGameStore.getState().setCharacterJob('SOLDIER');
-    useGameStore.getState().setCharacterStatus();
-  }, []);
-
   return (
-    <div className="flex flex-col items-center justify-items-center min-h-screen  gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] w-full max-w-[375px] mx-auto">
-      <h1 className="pt-10 text-4xl font-bold">FantasyAvatar</h1>
-      <main className="flex flex-col row-start-2 items-start sm:items-start">
-        <MainScreen />
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-end">
-        {/* <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image aria-hidden src="/file.svg" alt="File icon" width={16} height={16} />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image aria-hidden src="/window.svg" alt="Window icon" width={16} height={16} />
-          Examples
-        </a> */}
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://felixhan108.github.io/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image aria-hidden src="/globe.svg" alt="Globe icon" width={16} height={16} />
-          Go to Developer Blog →
-        </a>
-      </footer>
-    </div>
+    <>
+      <Interface />
+      <Intro />
+    </>
   );
 }

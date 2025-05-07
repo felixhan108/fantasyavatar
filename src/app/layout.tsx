@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
+import Image from 'next/image';
+import ExpBar from '@/components/Interface/ExpBar';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -23,8 +25,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
+    <html lang="en" className="dark">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <ExpBar />
+        <div className="flex flex-col items-center justify-items-center min-h-screen  gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] w-full max-w-[375px] mx-auto">
+          <h1 className="pt-10 text-4xl font-bold">FantasyAvatar</h1>
+          <main className="w-full flex flex-col row-start-2 items-center sm:items-start">
+            {children}
+          </main>
+          <footer className="fixed bottom-0 w-full flex gap-[24px] flex-wrap items-center justify-center p-4 bg-white dark:bg-black">
+            <a
+              className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+              href="https://felixhan108.github.io/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image aria-hidden src="/globe.svg" alt="Globe icon" width={16} height={16} />
+              Go to Developer Blog →
+            </a>
+          </footer>
+        </div>
+      </body>
     </html>
   );
 }
