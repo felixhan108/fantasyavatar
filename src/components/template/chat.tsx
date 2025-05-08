@@ -36,12 +36,16 @@ export default function Chat() {
           <div>
             <h2 className="text-lg font-bold mb-2">💬 Chat</h2>
           </div>
-          <div className="flex-1 overflow-y-auto text-white space-y-1 mb-2">
+          <div
+            className="flex-1 overflow-y-auto text-white space-y-1 mb-2"
+            style={{ maxHeight: 'calc(100vh - 150px)' }}
+          >
             {messages.map((msg) => (
               <div key={msg.id}>
                 <strong>{msg.userName}</strong>: {msg.text}
               </div>
             ))}
+            <div ref={(el) => el?.scrollIntoView({ behavior: 'smooth' })} />
           </div>
           <form onSubmit={handleSubmit} className="flex gap-2">
             <input
