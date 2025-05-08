@@ -1,5 +1,6 @@
 // src/firebase.ts
 import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 
 const firebaseConfig = {
@@ -15,5 +16,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 // 👉 provider: Google 로그인용 인증 제공자 객체. signInWithPopup 등에서 사용됨
 const provider = new GoogleAuthProvider();
+// db연결
+const db = getFirestore(app);
 
-export { auth, provider };
+export { auth, provider, db };

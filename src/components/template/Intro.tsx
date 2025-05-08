@@ -19,7 +19,7 @@ export default function Intro() {
   const setUserName = useUserStore((state) => state.setUserName);
   const fullStory = useUserStore((state) => state.storyData);
   const setFullStroy = useUserStore((state) => state.setStoryData);
-  const isUserStoryLoading = useUserStore((state)=>state.isUserStoryLoading)
+  const isUserStoryLoading = useUserStore((state) => state.isUserStoryLoading);
   const setRoleData = useUserStore((state) => state.setRoleData);
 
   // ✅ 기존 스토리, 유저 확인
@@ -27,7 +27,7 @@ export default function Intro() {
   useLoadFormLocalStorage('story', setFullStroy);
   useLoadFormLocalStorage('role', setRoleData);
 
-  // ✅ 이미 다 가공된 데이터들을 가지고 인터랙션을 주는 영역이라 const 로 변수 지정 해서 사용 
+  // ✅ 이미 다 가공된 데이터들을 가지고 인터랙션을 주는 영역이라 const 로 변수 지정 해서 사용
   const displayText = useTypeWriter(fullStory);
 
   // ✅ 글자가 전부 출력된 시점을 감지
@@ -54,34 +54,33 @@ export default function Intro() {
         <div>
           <div className="w-full flex justify-center items-center">
             <Card ref={scrollRef} className="w-[320] h-[320] px-6 overflow-y-auto box-border">
-            {(() => {
-              if (!fullStory && !isUserStoryLoading) {
-                return (
-                  <div className="flex flex-col items-center justify-center h-full">
-                    <StartGameButton />
-                  </div>
-                );
-              } else if (isUserStoryLoading) {
-                return (
-                  <div className="">
-                    <p className="">로딩중...</p>
-                  </div>
-                );
-              } else {
-                return (
-                  <div >
-                    <p className="whitespace-pre-line italic ">{displayText}</p>
-                  </div>
-                );
-              }
-            })()}
+              {(() => {
+                if (!fullStory && !isUserStoryLoading) {
+                  return (
+                    <div className="flex flex-col items-center justify-center h-full">
+                      <StartGameButton />
+                    </div>
+                  );
+                } else if (isUserStoryLoading) {
+                  return (
+                    <div className="flex flex-col items-center justify-center h-full">
+                      <p className="">로딩중...</p>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div>
+                      <p className="whitespace-pre-line italic ">{displayText}</p>
+                    </div>
+                  );
+                }
+              })()}
             </Card>
-            
           </div>
           {isTypingDone ? <button>여행 시작</button> : null}
         </div>
       ) : (
-        <GoogleLoginButton/>
+        <GoogleLoginButton />
       )}
     </div>
   );

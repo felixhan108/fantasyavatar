@@ -25,6 +25,6 @@ export const useUserStore = create(
     roleData: '',
     setRoleData: (role: string) => set({ roleData: role }),
     isUserStoryLoading: false,
-    setIsUserStoryLoading: (is:boolean) => set({isUserStoryLoading: is}),
+    setIsUserStoryLoading: (is: boolean) => set({ isUserStoryLoading: is }),
   }))
 );
