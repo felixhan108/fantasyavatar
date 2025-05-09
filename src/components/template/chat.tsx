@@ -71,7 +71,6 @@ export default function Chat() {
     const handleShortcut = (event: KeyboardEvent) => {
       if (event.key === 'c' || event.key === 'ㅊ') {
         toggleChat();
-        console.log('openchat!!!');
       }
     };
 
@@ -89,16 +88,13 @@ export default function Chat() {
           animate={{ x: 0 }}
           exit={{ x: '-100%' }}
           transition={{ type: 'tween', duration: 0.3 }}
-          className="fixed top-0 left-0 h-full w-80 bg-zinc-900 shadow-xl z-50 p-4"
+          className="fixed top-0 left-0 h-full w-80 bg-zinc-900 shadow-xl z-50 flex flex-col"
           ref={drawerRef}
         >
-          <div>
-            <h2 className="text-lg font-bold mb-2">💬 Chat</h2>
+          <div className="py-2 px-4">
+            <h2 className="text-lg font-bold">💬 Chat</h2>
           </div>
-          <div
-            className="flex-1 overflow-y-auto text-white space-y-1 mb-2"
-            style={{ maxHeight: 'calc(100vh - 100px)' }}
-          >
+          <div className="h-full overflow-y-auto text-white space-y-1 pb-1 px-4">
             {messages.map((msg) => (
               <div key={msg.id}>
                 <strong>{msg.userName}</strong>: {msg.text}
@@ -106,21 +102,15 @@ export default function Chat() {
             ))}
             <div ref={(el) => el?.scrollIntoView({ behavior: 'smooth' })} />
           </div>
-          <form onSubmit={handleSubmit} className="flex gap-2">
+          <form onSubmit={handleSubmit} className="flex justify-between gap-2 bg-zinc-800 p-2 px-4">
             <input
               ref={inputRef}
-              className="flex-1 p-1 rounded text-white"
+              className="rounded w-full text-white bg-zinc-700 p-2"
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="메시지 입력"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  handleSubmit(e);
-                }
-              }}
             />
-            <button type="submit" className="text-white">
+            <button type="submit" className="text-white bg-zinc-700 p-2 flex-shrink-0 rounded">
               전송
             </button>
           </form>
