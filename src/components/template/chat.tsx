@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useUIStore } from '@/store/uiStore';
 import { sendMessage } from '@/lib/sendMessage';
 import { useChatMessage } from '@/hooks/useChatMessage';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useLayoutEffect } from 'react';
 
 export default function Chat() {
   const isChatOpen = useUIStore((state) => state.isChatOpen);
@@ -13,10 +13,20 @@ export default function Chat() {
   const messages = useChatMessage('global');
   const [text, setText] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    if (isChatOpen && inputRef.current) {
-      inputRef.current.focus();
-    }
+    const handleEnterToFocus = (event: KeyboardEvent) => {
+      if (isChatOpen && event.key === 'Enter' && document.activeElement !== inputRef.current) {
+        event.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleEnterToFocus);
+    return () => {
+      document.removeEventListener('keydown', handleEnterToFocus);
+    };
   }, [isChatOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -69,7 +79,7 @@ export default function Chat() {
 
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
-      if (event.key === 'c' || event.key === 'ㅊ') {
+      if ((event.key === 'C' || event.key === 'c' || event.key === 'ㅊ') && event.shiftKey) {
         toggleChat();
       }
     };
@@ -79,6 +89,14 @@ export default function Chat() {
       document.removeEventListener('keydown', handleShortcut);
     };
   }, [toggleChat, isChatOpen]);
+
+  useLayoutEffect(() => {
+    if (isChatOpen) {
+      setTimeout(() => {
+        scrollRef.current?.scrollIntoView({ behavior: 'auto' });
+      }, 0);
+    }
+  }, [isChatOpen, messages]);
 
   return (
     <AnimatePresence>
@@ -100,7 +118,7 @@ export default function Chat() {
                 <strong>{msg.userName}</strong>: {msg.text}
               </div>
             ))}
-            <div ref={(el) => el?.scrollIntoView({ behavior: 'smooth' })} />
+            <div ref={scrollRef} />
           </div>
           <form onSubmit={handleSubmit} className="flex justify-between gap-2 bg-zinc-800 p-2 px-4">
             <input
