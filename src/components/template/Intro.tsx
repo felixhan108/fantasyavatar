@@ -21,6 +21,7 @@ export default function Intro() {
 
   const userName = useUserStore((state) => state.userName);
   const fullStory = useUserStore((state) => state.storyData);
+  const isGaming = useUserStore((state) => state.isGaming); // 추가: 로그인 후 상태 확인용
   const isUserStoryLoading = useUserStore((state) => state.isUserStoryLoading);
   const setIsGaiming = useUIStore((state) => state.setIsGaming);
 
@@ -37,6 +38,12 @@ export default function Intro() {
     }
   }, [displayText, fullStory, isEnd]);
 
+  useEffect(() => {
+    if (userName && isGaming) {
+      setIsGaiming(true);
+    }
+  }, [userName, isGaming, setIsGaiming]);
+
   // 글씨 출력 양에 따른 스크롤 움직이기
   useEffect(() => {
     if (scrollRef.current) {
@@ -49,7 +56,6 @@ export default function Intro() {
   }, [displayText, isEnd]);
 
   const handleStartGame = async () => {
-    // firestore 'isGaiming' data is true
     const auth = getAuth();
     const userId = auth.currentUser?.uid;
 
@@ -57,47 +63,54 @@ export default function Intro() {
       console.error('User ID is undefined. Cannot proceed with starting the game.');
       return;
     }
+
     const userDoc = doc(db, 'users', userId);
+
+    if (isGaming) {
+      setIsGaiming(true);
+      return;
+    }
+
     await setDoc(userDoc, { isGaming: true }, { merge: true });
     setIsGaiming(true);
   };
 
   return (
     <div className="flex flex-col gap-4">
-      {userName ? (
-        <div>
-          <div className="w-full flex justify-center items-center">
-            <Card ref={scrollRef} className="w-[320] h-[320] px-6 overflow-y-auto box-border">
-              {(() => {
-                if (!fullStory && !isUserStoryLoading) {
-                  return (
-                    <div className="flex flex-col items-center justify-center h-full">
-                      <StartGameButton />
-                    </div>
-                  );
-                } else if (isUserStoryLoading) {
-                  return (
-                    <div className="flex flex-col items-center justify-center h-full">
-                      <p className="">로딩중...</p>
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div>
-                      <p className="whitespace-pre-line italic ">{displayText}</p>
-                    </div>
-                  );
-                }
-              })()}
-            </Card>
+      {(() => {
+        if (!userName) {
+          return <GoogleLoginButton />;
+        }
+
+        if (!fullStory && !isUserStoryLoading) {
+          return (
+            <div className="flex flex-col items-center justify-center h-full">
+              <StartGameButton />
+            </div>
+          );
+        }
+
+        if (isUserStoryLoading) {
+          return (
+            <div className="flex flex-col items-center justify-center h-full">
+              <p className="">로딩중...</p>
+            </div>
+          );
+        }
+
+        return (
+          <div>
+            <div className="w-full flex justify-center items-center">
+              <Card ref={scrollRef} className="w-[320px] h-[320px] px-6 overflow-y-auto box-border">
+                <p className="whitespace-pre-line italic">{displayText}</p>
+              </Card>
+            </div>
+            <div className="flex justify-center items-center mt-4">
+              {isTypingDone ? <Button onClick={handleStartGame}>게임시작</Button> : null}
+            </div>
           </div>
-          <div className="flex justify-center items-center mt-4">
-            {isTypingDone ? <Button onClick={handleStartGame}>게임시작</Button> : null}
-          </div>
-        </div>
-      ) : (
-        <GoogleLoginButton />
-      )}
+        );
+      })()}
     </div>
   );
 }
