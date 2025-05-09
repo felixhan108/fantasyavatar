@@ -16,10 +16,12 @@ export function useChatMessage(roomId: string) {
         setMessages([]);
         return;
       }
-      const parsed = Object.entries(data).map(([key, value]: any) => ({
-        id: key,
-        ...value,
-      }));
+      const parsed = Object.entries(data as Record<string, { userName: string; text: string; createAt: string }>).map(
+        ([key, value]) => ({
+          id: key,
+          ...value,
+        })
+      );
       console.log('useChatMessage -> parsed', parsed);
       setMessages(parsed);
     });

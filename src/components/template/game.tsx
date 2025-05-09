@@ -128,7 +128,7 @@ export default function Game() {
     return () => {
       game.destroy(true);
     };
-  }, []);
+  }, [jobData]);
 
   return (
     <>
