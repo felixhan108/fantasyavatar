@@ -22,10 +22,6 @@ export default function Intro() {
   const isUserStoryLoading = useUserStore((state) => state.isUserStoryLoading);
   const setRoleData = useUserStore((state) => state.setRoleData);
 
-  // ✅ 기존 스토리, 유저 확인
-  useLoadFormLocalStorage('displayName', setUserName);
-  useLoadFormLocalStorage('story', setFullStroy);
-  useLoadFormLocalStorage('role', setRoleData);
 
   // ✅ 이미 다 가공된 데이터들을 가지고 인터랙션을 주는 영역이라 const 로 변수 지정 해서 사용
   const displayText = useTypeWriter(fullStory);
