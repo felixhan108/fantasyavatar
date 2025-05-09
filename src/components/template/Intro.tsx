@@ -21,7 +21,7 @@ export default function Intro() {
 
   const userName = useUserStore((state) => state.userName);
   const fullStory = useUserStore((state) => state.storyData);
-  const isGaming = useUserStore((state) => state.isGaming); // 추가: 로그인 후 상태 확인용
+  const isGaming = useUIStore((state) => state.isGaming); // 추가: 로그인 후 상태 확인용
   const isUserStoryLoading = useUserStore((state) => state.isUserStoryLoading);
   const setIsGaiming = useUIStore((state) => state.setIsGaming);
 
