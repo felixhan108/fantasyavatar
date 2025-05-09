@@ -27,9 +27,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <div className="flex flex-col items-center justify-between min-h-screen font-[family-name:var(--font-geist-sans)] w-full max-w-[375px] mx-auto">
+    <html lang="en" className="dark h-full">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased h-full`}>
+        <div className="h-full flex flex-col items-center justify-between font-[family-name:var(--font-geist-sans)] w-full max-w-[375px] mx-auto">
           <main className="w-full flex flex-col row-start-2 items-center sm:items-start">
             <ExpBar />
             <h1 className="mt-5 text-4xl font-bold">FantasyAvatar</h1>
