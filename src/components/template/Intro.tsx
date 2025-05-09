@@ -5,11 +5,13 @@ import { useTypeWriter } from '@/hooks/useTypeWriter';
 import { useUserStore } from '@/store/userStore';
 
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import GoogleLoginButton from '../GoogleLoginButton';
 import StartGameButton from '../StartGameButton';
 
 //ui
 import { Card } from '../ui/card';
+import { Button } from '../ui/button';
 
 export default function Intro() {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -24,11 +26,14 @@ export default function Intro() {
 
 
   // ✅ 이미 다 가공된 데이터들을 가지고 인터랙션을 주는 영역이라 const 로 변수 지정 해서 사용
-  const displayText = useTypeWriter(fullStory);
+  const [displayText, isEnd] = useTypeWriter(fullStory);
 
   // ✅ 글자가 전부 출력된 시점을 감지
   useEffect(() => {
-    if (displayText === fullStory && fullStory !== '') {
+    console.log('displayText', displayText);
+    console.log('isEnd', isEnd);
+    if (displayText && isEnd) {
+      console.log('타이핑 완료');
       setIsTypingDone(true);
     }
   }, [displayText, fullStory]);
@@ -42,7 +47,13 @@ export default function Intro() {
         behavior: 'smooth',
       });
     }
-  }, [displayText]);
+  }, [displayText, isEnd]);
+
+  const router = useRouter();
+
+  const handleStartGame = () => {
+    router.push('/game'); // '/game' 경로로 이동
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -73,7 +84,9 @@ export default function Intro() {
               })()}
             </Card>
           </div>
-          {isTypingDone ? <button>여행 시작</button> : null}
+          <div className="flex justify-center items-center mt-4">
+            {isTypingDone ? <Button onClick={handleStartGame}>여행 시작</Button> : null}
+          </div>
         </div>
       ) : (
         <GoogleLoginButton />

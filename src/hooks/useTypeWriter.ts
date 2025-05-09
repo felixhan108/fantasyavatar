@@ -1,16 +1,20 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from 'react';
 
 export function useTypeWriter(text: string) {
   const [displayText, setDisplayText] = useState<string>('');
-  
+  const [isEnd, setIsEnd] = useState<boolean>(false);
+
   useEffect(() => {
-    if(!text) return;
+    if (!text) return;
 
     let i = 0;
     setDisplayText('');
+    setIsEnd(false);
 
-    const interval = setInterval(()=>{
+    const interval = setInterval(() => {
       const char = text.charAt(i);
+      const isLastChar = i >= text.length - 1;
+
       if (char) {
         setDisplayText((prev) => {
           if (char === '.') {
@@ -20,16 +24,18 @@ export function useTypeWriter(text: string) {
           }
         });
         i++;
-      } else {
-        clearInterval(interval);
+        if (isLastChar) {
+          clearInterval(interval);
+          setIsEnd(true);
+        }
       }
     }, 40);
 
-    return () => clearInterval(interval);
-
-
-
+    return () => {
+      clearInterval(interval);
+      setIsEnd(true);
+    };
   }, [text]);
 
-  return displayText;
+  return [displayText, isEnd];
 }
