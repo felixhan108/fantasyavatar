@@ -9,7 +9,7 @@ const CharacterInfo: React.FC = () => {
   const userRole = useUserStore((state) => state.roleData); // Replace with actual user job from your state management or props
 
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full flex flex-col gap-1">
       <div className="w-full flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span>🎖️ {userStatus?.level}</span>
@@ -32,7 +32,10 @@ const CharacterInfo: React.FC = () => {
             value={((userStatus?.hp ?? 0) / (userStatus?.maxHp ?? 1)) * 100}
             className="w-full [&>div]:bg-red-500"
           />
-          <Progress value={((userStatus?.mp ?? 0) / (userStatus?.maxMp ?? 1)) * 100} className="w-full [&>div]:bg-blue-500" />
+          <Progress
+            value={((userStatus?.mp ?? 0) / (userStatus?.maxMp ?? 1)) * 100}
+            className="w-full [&>div]:bg-blue-500"
+          />
         </div>
       </div>
     </div>

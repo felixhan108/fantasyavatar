@@ -135,7 +135,7 @@ export default function Game() {
       <div className="flex flex-col gap-4">
         <div>
           <div className="w-full flex justify-center items-center">
-            <div ref={phaserRef} />
+            <div ref={phaserRef} className="rounded overflow-hidden" />
           </div>
         </div>
       </div>
