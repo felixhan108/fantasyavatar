@@ -18,7 +18,7 @@ import { useUserStore } from '@/store/userStore';
 
 export default function Game() {
   const phaserRef = useRef<HTMLDivElement>(null);
-  const roleData = useUserStore((state) => state.roleData);
+  const jobData = useUserStore((state) => state.jobData);
   // const fullStory = useUserStore((state) => state.storyData);
 
   useEffect(() => {
@@ -54,8 +54,8 @@ export default function Game() {
         });
 
         // 캐릭터 Sprite 생성
-        
-        this.character = Characters[roleData as keyof typeof Characters];
+
+        this.character = Characters[jobData as keyof typeof Characters];
         this.characterSprite = this.character.createSprite(this);
         this.characterSprite.play(this.character.idleAnim);
 

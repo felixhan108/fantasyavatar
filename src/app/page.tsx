@@ -18,9 +18,9 @@ export default function Home() {
   const setStoryData = useUserStore((state) => state.setStoryData);
   const setRoleData = useUserStore((state) => state.setRoleData);
   const setUserStatus = useUserStore((state) => state.setUserStatus);
+  const setJobData = useUserStore((state) => state.setJobData);
   const isGaming = useUIStore((state) => state.isGaming);
   const setIsGaming = useUIStore((state) => state.setIsGaming);
-  const setJobData = useUIStore((state) => state.setJobData);
 
   useEffect(() => {
     const fetchUserData = async (uid: string, displayName: string | null) => {
@@ -53,7 +53,7 @@ export default function Home() {
     });
 
     return () => unsubscribe(); // Cleanup subscription on unmount
-  }, [setUserName, setStoryData, setRoleData, setUserStatus, setIsGaming]);
+  }, [setUserName, setStoryData, setRoleData, setUserStatus, setIsGaming, setJobData]);
 
   return (
     <>
