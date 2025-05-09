@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import Image from 'next/image';
 import ExpBar from '@/components/Interface/ExpBar';
 import BottomMenu from '@/components/modules/BottomMenu';
 import Inventory from '@/components/template/Inventory';
