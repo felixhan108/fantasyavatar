@@ -35,7 +35,7 @@ export default function RootLayout({
             <h1 className="mt-5 text-4xl font-bold">FantasyAvatar</h1>
             {children}
           </main>
-          <footer className="w-full flex gap-[10px] flex-wrap items-center justify-center flex-col bg-white dark:bg-black">
+          <footer className="w-full flex gap-[10px] flex-wrap items-center justify-center flex-col bg-white dark:bg-black mt-5">
             <BottomMenu />
             <Chat />
             <Inventory />
