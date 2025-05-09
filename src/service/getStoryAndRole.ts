@@ -25,19 +25,19 @@ export const getStoryAndRole = async () => {
 
       if (data.role === '검사') {
         if (SWORD) {
-          await setDoc(userDoc, { status: SWORD }, { merge: true });
+          await setDoc(userDoc, { status: SWORD, job: 'SWORD' }, { merge: true });
           useUserStore.setState({ userStatus: SWORD });
         }
       }
       if (data.role === '마법사') {
         if (MAGIC) {
-          await setDoc(userDoc, { status: MAGIC }, { merge: true });
+          await setDoc(userDoc, { status: MAGIC, job: 'MAGIC' }, { merge: true });
           useUserStore.setState({ userStatus: MAGIC });
         }
       }
       if (data.role === '궁수') {
         if (ARCHER) {
-          await setDoc(userDoc, { status: ARCHER }, { merge: true });
+          await setDoc(userDoc, { status: ARCHER, job: 'ARCHER' }, { merge: true });
           useUserStore.setState({ userStatus: ARCHER });
         }
       }

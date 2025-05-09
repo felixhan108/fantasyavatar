@@ -8,6 +8,8 @@ interface UIState {
   isChatOpen: boolean;
   closeChat: () => void;
   toggleChat: () => void;
+  isGaming: boolean;
+  setIsGaming: (game: boolean) => void;
 }
 
 export const useUIStore = create(
@@ -18,5 +20,7 @@ export const useUIStore = create(
     isChatOpen: false,
     closeChat: () => set({ isChatOpen: false }),
     toggleChat: () => set((state) => ({ isChatOpen: !state.isChatOpen })),
+    isGaming: false,
+    setIsGaming: (game: boolean) => set({ isGaming: game }),
   }))
 );

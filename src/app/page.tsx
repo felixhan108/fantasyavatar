@@ -6,12 +6,21 @@ import { useEffect } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { useUserStore } from '@/store/userStore';
+import { useUIStore } from '@/store/uiStore';
+import dynamic from 'next/dynamic';
+
+const Game = dynamic(() => import('@/components/template/game'), {
+  ssr: false,
+});
 
 export default function Home() {
   const setUserName = useUserStore((state) => state.setUserName);
   const setStoryData = useUserStore((state) => state.setStoryData);
   const setRoleData = useUserStore((state) => state.setRoleData);
   const setUserStatus = useUserStore((state) => state.setUserStatus);
+  const isGaming = useUIStore((state) => state.isGaming);
+  const setIsGaming = useUIStore((state) => state.setIsGaming);
+  const setJobData = useUIStore((state) => state.setJobData);
 
   useEffect(() => {
     const fetchUserData = async (uid: string, displayName: string | null) => {
@@ -24,7 +33,9 @@ export default function Home() {
           setUserName(displayName || 'Anonymous');
           setStoryData(userDoc.data().story || '');
           setRoleData(userDoc.data().role || '');
+          setJobData(userDoc.data().job || '');
           setUserStatus(userDoc.data().status || null);
+          setIsGaming(userDoc.data().isGaming);
         } else {
           console.error('No such document!');
         }
@@ -38,16 +49,16 @@ export default function Home() {
       if (user) {
         console.log('User is signed in:', user);
         fetchUserData(user.uid, user.displayName);
-      } 
+      }
     });
 
     return () => unsubscribe(); // Cleanup subscription on unmount
-  }, [setUserName, setStoryData, setRoleData, setUserStatus]);
+  }, [setUserName, setStoryData, setRoleData, setUserStatus, setIsGaming]);
 
   return (
     <>
       <Interface />
-      <Intro />
+      {isGaming ? <Game /> : <Intro />}
     </>
   );
 }

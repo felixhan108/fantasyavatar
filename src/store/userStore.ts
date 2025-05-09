@@ -26,6 +26,8 @@ type UserStoreType = {
   setStoryData: (story: string) => void;
   roleData: string;
   setRoleData: (role: string) => void;
+  jobData: string;
+  setJobData: (job: string) => void;
   isUserStoryLoading: boolean;
   setIsUserStoryLoading: (is: boolean) => void;
 };
@@ -42,6 +44,8 @@ export const useUserStore = create(
     setStoryData: (story: string) => set({ storyData: story }),
     roleData: '',
     setRoleData: (role: string) => set({ roleData: role }),
+    jobData: '',
+    setJobData: (job: string) => set({ jobData: job }),
     isUserStoryLoading: false,
     setIsUserStoryLoading: (is: boolean) => set({ isUserStoryLoading: is }),
   }))

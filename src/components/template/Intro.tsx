@@ -1,29 +1,28 @@
 'use client';
 
-import { useLoadFormLocalStorage } from '@/hooks/useLoadFormLocalStorage';
 import { useTypeWriter } from '@/hooks/useTypeWriter';
 import { useUserStore } from '@/store/userStore';
 
 import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import GoogleLoginButton from '../GoogleLoginButton';
-import StartGameButton from '../StartGameButton';
+import GoogleLoginButton from '@/components/actions/GoogleLoginButton';
+import StartGameButton from '../actions/StartGameButton';
 
 //ui
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '@/config/firebase';
+import { getAuth } from 'firebase/auth';
+import { useUIStore } from '@/store/uiStore';
 
 export default function Intro() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isTypingDone, setIsTypingDone] = useState(false);
 
   const userName = useUserStore((state) => state.userName);
-  const setUserName = useUserStore((state) => state.setUserName);
   const fullStory = useUserStore((state) => state.storyData);
-  const setFullStroy = useUserStore((state) => state.setStoryData);
   const isUserStoryLoading = useUserStore((state) => state.isUserStoryLoading);
-  const setRoleData = useUserStore((state) => state.setRoleData);
-
+  const setIsGaiming = useUIStore((state) => state.setIsGaming);
 
   // ✅ 이미 다 가공된 데이터들을 가지고 인터랙션을 주는 영역이라 const 로 변수 지정 해서 사용
   const [displayText, isEnd] = useTypeWriter(fullStory);
@@ -36,7 +35,7 @@ export default function Intro() {
       console.log('타이핑 완료');
       setIsTypingDone(true);
     }
-  }, [displayText, fullStory]);
+  }, [displayText, fullStory, isEnd]);
 
   // 글씨 출력 양에 따른 스크롤 움직이기
   useEffect(() => {
@@ -49,11 +48,19 @@ export default function Intro() {
     }
   }, [displayText, isEnd]);
 
-  const router = useRouter();
+  const handleStartGame = async () => {
+    // firestore 'isGaiming' data is true
+    const auth = getAuth();
+    const userId = auth.currentUser?.uid;
 
-  const handleStartGame = () => {
-    router.push('/game'); // '/game' 경로로 이동
-  }
+    if (!userId) {
+      console.error('User ID is undefined. Cannot proceed with starting the game.');
+      return;
+    }
+    const userDoc = doc(db, 'users', userId);
+    await setDoc(userDoc, { isGaming: true }, { merge: true });
+    setIsGaiming(true);
+  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -85,7 +92,7 @@ export default function Intro() {
             </Card>
           </div>
           <div className="flex justify-center items-center mt-4">
-            {isTypingDone ? <Button onClick={handleStartGame}>여행 시작</Button> : null}
+            {isTypingDone ? <Button onClick={handleStartGame}>게임시작</Button> : null}
           </div>
         </div>
       ) : (
