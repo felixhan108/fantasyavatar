@@ -15,6 +15,7 @@ import { db } from '@/config/firebase';
 import { getAuth } from 'firebase/auth';
 import { useUIStore } from '@/store/uiStore';
 
+// TODO: Firebase Admin SDK를 사용해서 서버에서 유저를 인증하고 getServerSideProps에서 정확한 데이터를 넘겨주는 구조로 개선
 export default function Intro() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isTypingDone, setIsTypingDone] = useState(false);
